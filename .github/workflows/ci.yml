@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # puppeteer is a devDependency of the demos that ship a Lighthouse audit
+  # script; nothing in CI launches a browser, so skip the Chrome download.
+  PUPPETEER_SKIP_DOWNLOAD: "1"
+
+jobs:
+  build:
+    name: ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - ai-chat-orb
+          - dependency-graph
+          - interactive-globe
+          - liquid-glass-login
+          - spotify-clone
+          - streak-visualizer
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run build
+      - run: npm run test --if-present

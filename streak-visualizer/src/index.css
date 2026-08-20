@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+.theme-transition,
+.theme-transition *:not(svg *) {
+  transition-property: background-color, color, border-color, box-shadow, fill, stroke;
+  transition-duration: 0.45s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+body {
+  font-family:
+    'Outfit',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--streak-accent, #ff9500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Custom scrollbar */
+.streak-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 30%, transparent) transparent;
+}
+.streak-scroll:hover {
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 60%, transparent) transparent;
+}
+.streak-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+.streak-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 99px;
+}
+.streak-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 30%, transparent);
+  border-radius: 99px;
+}
+.streak-scroll:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 60%, transparent);
+}
+.streak-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+.streak-scroll::-webkit-scrollbar-thumb:active {
+  background: var(--text-secondary);
+}

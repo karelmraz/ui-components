@@ -1,0 +1,4 @@
+# https://www.robotstxt.org/robotstxt.html
+# Allow all crawlers full access.
+User-agent: *
+Allow: /

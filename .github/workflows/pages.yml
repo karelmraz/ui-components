@@ -1,0 +1,95 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  PUPPETEER_SKIP_DOWNLOAD: "1"
+  REPO_NAME: ${{ github.event.repository.name }}
+  PROJECTS: >-
+    spotify-clone ai-chat-orb streak-visualizer dependency-graph
+    liquid-glass-login interactive-globe
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: "*/package-lock.json"
+
+      - name: Build every demo under /<repo>/<project>/
+        run: |
+          set -euo pipefail
+          rm -rf _site && mkdir _site
+          for p in $PROJECTS; do
+            echo "::group::$p"
+            ( cd "$p" && npm ci && npx tsc -b && npx vite build --base="/$REPO_NAME/$p/" )
+            mkdir -p "_site/$p" && cp -R "$p/dist/." "_site/$p/"
+            echo "::endgroup::"
+          done
+
+      - name: Write landing page
+        run: |
+          {
+            cat <<'EOF'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>UI components – live demos</title>
+            <style>
+              body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0d0d16; color: #f0f0fa; font: 16px/1.6 system-ui, sans-serif; }
+              main { padding: 2rem; }
+              h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
+              p { margin: 0 0 1.5rem; color: #9090a8; }
+              ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+              a { color: #c084fc; text-decoration: none; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <main>
+              <h1>UI components</h1>
+              <p>Live demos. Source on <a href="https://github.com/karelmraz/ui-components">GitHub</a>.</p>
+              <ul>
+          EOF
+            for p in $PROJECTS; do echo "        <li><a href=\"./$p/\">$p</a></li>"; done
+            cat <<'EOF'
+              </ul>
+            </main>
+          </body>
+          </html>
+          EOF
+          } > _site/index.html
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

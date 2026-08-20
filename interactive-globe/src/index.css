@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply m-0 h-full bg-[#f7f0e9] font-sans text-[#1c1917] antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+  .navlink {
+    @apply cursor-pointer text-strong transition-colors duration-200 hover:text-ink;
+  }
+
+  .pill {
+    @apply border border-hairline bg-surface text-ink transition-colors duration-200 hover:bg-surface-hover;
+  }
+
+  .noise {
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    background-size: 200px 200px;
+  }
+}

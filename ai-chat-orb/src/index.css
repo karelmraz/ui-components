@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: #04070e;
+  color: #d6ecff;
+  font-family:
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+/* Subtle scanlines overlay applied via utility */
+.scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(170, 215, 255, 0.5) 0px,
+    rgba(170, 215, 255, 0.5) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* Hex/grid backdrop */
+.hex-grid {
+  background-image:
+    linear-gradient(0deg, rgba(90, 170, 255, 0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 170, 255, 0.55) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Slow caret blink for the transcript "speaking" indicator */
+@keyframes caret-blink {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.caret-blink {
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* Soft bar pulse for the volume meter */
+@keyframes bar-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Dropdown entrance — a quick pop from the top-right anchor */
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-in {
+  animation: dropdown-in 0.14s ease-out;
+  transform-origin: top right;
+}
+
+/* ── Custom scrollbars ───────────────────────────────────────────────────
+   Slim, cyan-tinted thumbs on a transparent track to match the HUD theme,
+   replacing the bright default OS scrollbars. Firefox uses scrollbar-* ;
+   Chromium/Safari use the ::-webkit-scrollbar pseudo-elements. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 211, 238, 0.28) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  /* The transparent border + content-box clip leave the thumb floating with
+     padding, so it reads as a thin pill rather than a full-width bar. */
+  background-color: rgba(34, 211, 238, 0.22);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(34, 211, 238, 0.42);
+}
+
+/* Hide the increment/decrement arrow buttons (the up/down spinners). */
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Keep the corner where two scrollbars meet transparent. */
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
