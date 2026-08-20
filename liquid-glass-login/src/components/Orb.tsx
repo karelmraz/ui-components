@@ -253,7 +253,9 @@ export function Orb({
     const uBg = gl.getUniformLocation(program, 'backgroundColor');
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      // Soft gradient blob: above 1.5x DPR the extra pixels are invisible but
+      // roughly double the fragment work of an already noise-heavy shader
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const w = container.clientWidth;
       const h = container.clientHeight;
       canvas.width = w * dpr;
